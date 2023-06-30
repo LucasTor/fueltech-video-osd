@@ -48,7 +48,7 @@ def generate_lambda(data_points):
     for x in data_points:
         position = f"{float(x):.2f}"
         if not text_cache.get(position):
-            text_cache[position] = TextClip(position, font='Patopian-1986', fontsize = 90, color = 'red').set_duration(1/25).set_position(("center","center")).margin(top=15, left=15, opacity=0)
+            text_cache[position] = TextClip(position, font='Patopian-1986', fontsize = 90, color = 'red').set_duration(1/25).set_position(("center","center")).margin(top=15, left=12, opacity=0)
 
         frame = text_cache[position]
         text_frames.append(frame)
