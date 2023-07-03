@@ -33,18 +33,18 @@ def generate_tach(data_points):
     
     pointer_clip = ImageSequenceClip([get_pointer(x) for x in data_points], fps=25, load_images=True)
 
-    # text_cache = {}
-    # text_frames = []
-    # for x in data_points:
-    #     position = str(round_to_closest(x))
-    #     if not text_cache.get(position):
-    #         text_cache[position] = TextClip(position, font='Patopian-1986', fontsize = 75, color = 'black').set_duration(1/25).set_position(("center","center")).margin(top=300, opacity=0)
+    text_cache = {}
+    text_frames = []
+    for x in data_points:
+        position = str(round_to_closest(x))
+        if not text_cache.get(position):
+            text_cache[position] = TextClip(position, font='Patopian-1986', fontsize = 75, color = 'black').set_duration(1/25).set_position(("center","center")).margin(top=300, opacity=0)
 
-    #     frame = text_cache[position]
-    #     text_frames.append(frame)
+        frame = text_cache[position]
+        text_frames.append(frame)
 
-    # text_clip = concatenate_videoclips(text_frames).set_position(('center', 'center'))
-    clip = CompositeVideoClip([tach_clip, pointer_clip])
+    text_clip = concatenate_videoclips(text_frames).set_position(('center', 'center'))
+    clip = CompositeVideoClip([tach_clip, pointer_clip, text_clip])
 
     return clip
 
@@ -68,18 +68,18 @@ def generate_speed(data_points):
     
     pointer_clip = ImageSequenceClip([get_pointer(x) for x in data_points], fps=25, load_images=True)
 
-    # text_cache = {}
-    # text_frames = []
-    # for x in data_points:
-    #     position = str(round_to_closest(x, 1))
-    #     if not text_cache.get(position):
-    #         text_cache[position] = TextClip(position, font='Patopian-1986', fontsize = 75, color = 'black').set_duration(1/25).set_position(("center","center")).margin(top=300, opacity=0)
+    text_cache = {}
+    text_frames = []
+    for x in data_points:
+        position = str(round_to_closest(x, 1))
+        if not text_cache.get(position):
+            text_cache[position] = TextClip(position, font='Patopian-1986', fontsize = 75, color = 'black').set_duration(1/25).set_position(("center","center")).margin(top=300, opacity=0)
 
-    #     frame = text_cache[position]
-    #     text_frames.append(frame)
+        frame = text_cache[position]
+        text_frames.append(frame)
 
-    # text_clip = concatenate_videoclips(text_frames).set_position(('center', 'center'))
-    clip = CompositeVideoClip([speed_clip, pointer_clip])
+    text_clip = concatenate_videoclips(text_frames).set_position(('center', 'center'))
+    clip = CompositeVideoClip([speed_clip, pointer_clip, text_clip])
 
     return clip
 
@@ -87,19 +87,19 @@ def generate_speed(data_points):
 def generate_lambda(data_points):
     wideband_clip = ImageClip('overlay-wideband.png').set_duration(len(data_points) / 25)
 
-    # text_cache = {}
-    # text_frames = []
-    # for x in data_points:
-    #     position = f"{float(x):.2f}"
-    #     if not text_cache.get(position):
-    #         text_cache[position] = TextClip(position, font='Patopian-1986', fontsize = 90, color = 'red').set_duration(1/25).set_position(("center","center")).margin(top=15, left=12, opacity=0)
+    text_cache = {}
+    text_frames = []
+    for x in data_points:
+        position = f"{float(x):.2f}"
+        if not text_cache.get(position):
+            text_cache[position] = TextClip(position, font='Patopian-1986', fontsize = 90, color = 'red').set_duration(1/25).set_position(("center","center")).margin(top=15, left=12, opacity=0)
 
-    #     frame = text_cache[position]
-    #     text_frames.append(frame)
+        frame = text_cache[position]
+        text_frames.append(frame)
 
-    # text_clip = concatenate_videoclips(text_frames).set_position(('center', 'center'))
+    text_clip = concatenate_videoclips(text_frames).set_position(('center', 'center'))
 
-    clip = CompositeVideoClip([wideband_clip])
+    clip = CompositeVideoClip([wideband_clip, text_clip])
 
     return clip
 
@@ -180,3 +180,4 @@ if __name__ == '__main__':
         "scale": 0.5,
         "img": "/overlay-wideband.png",
     }])
+
