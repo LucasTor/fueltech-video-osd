@@ -10,5 +10,5 @@ CORS(app)
 @app.route("/", methods=['POST'])
 def hello_world():
     generate_thing(request.json)
-    return send_file('test.mp4')
-    # return "<p>Hello, World!</p>"
+    # return send_file('test.mp4')
+    return "<p>Hello, World!</p>"

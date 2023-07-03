@@ -16,16 +16,11 @@ def round_to_closest(x, base=50):
 def generate_tach(data_points):
     tach_clip = ImageClip('tachometer-bg.png').set_duration(len(data_points) / 25)
 
-    pointer_frames = []
-    for x in data_points:
-        position = str(int((-round_to_closest(x) / 33.3) - 60))
-        if not pointers_cache.get(position):
-            pointers_cache[position] = pointer.rotate(int(position), expand=False)
-
-        frame = pointers_cache[position]
-        pointer_frames.append(frame)
-
-    pointer_clip = concatenate_videoclips(pointer_frames)
+    def get_pointer(x):
+        position = str(int((round_to_closest(x) / 33.3) + 60))
+        return f'./assets/pointers/pointer-{position}.png'
+    
+    pointer_clip = ImageSequenceClip([get_pointer(x) for x in data_points], fps=25, load_images=True)
 
     text_cache = {}
     text_frames = []
@@ -45,16 +40,11 @@ def generate_tach(data_points):
 def generate_speed(data_points):
     speed_clip = ImageClip('speedometer-bg.png').set_duration(len(data_points) / 25)
 
-    pointer_frames = []
-    for x in data_points:
-        position = str(int((-round_to_closest(x, 1) / 1.1) - 55))
-        if not pointers_cache.get(position):
-            pointers_cache[position] = pointer.rotate(int(position), expand=False)
-
-        frame = pointers_cache[position]
-        pointer_frames.append(frame)
-
-    pointer_clip = concatenate_videoclips(pointer_frames)
+    def get_pointer(x):
+        position = str(int((round_to_closest(x, 1) / 1.1) + 55))
+        return f'./assets/pointers/pointer-{position}.png'
+    
+    pointer_clip = ImageSequenceClip([get_pointer(x) for x in data_points], fps=25, load_images=True)
 
     text_cache = {}
     text_frames = []
@@ -92,17 +82,12 @@ def generate_lambda(data_points):
     return clip
 
 def generate_2step(data_points):
-    image_2step = ImageClip('2step.png').set_duration(1 / 25)
+    on = './2step-on.png'
+    off = './2step-off.png'
 
-    on = image_2step
-    off = moviepy.video.fx.all.blackwhite(image_2step)
+    frames = ImageSequenceClip([on if x == 'ON' else off for x in data_points], fps=25, load_images=True)
 
-    frames = []
-    for x in data_points:
-        frame = on if x == 'ON' else off
-        frames.append(frame)
-
-    return concatenate_videoclips(frames).set_position(('center', 'center'))
+    return frames.set_position(('center', 'center'))
 
 def generate_thing(gauges):
     with open('log_fueltech_2.csv', 'r') as csv_file:
@@ -110,7 +95,7 @@ def generate_thing(gauges):
         list = [*reader]
         list.pop(0)
 
-        bg = ImageClip('overlay-bg.png').set_duration(len(list) / 25).set_pos(("center","center"))
+        bg = ImageClip('overlay-bg.png').set_duration(len(list) / 25).set_position(("center","center"))
         clip = CompositeVideoClip([bg])
 
         for gauge in gauges:
@@ -118,12 +103,12 @@ def generate_thing(gauges):
             posY = gauge['y']
             scale = gauge['scale']
             id = gauge['id']
-            gauge = None
 
+            gauge = None
             match id:
                 case 'tachometer':
                     gauge = generate_tach([x[1] for x in list]).set_position((posX, posY)).resize(scale)
-
+            
                 case 'speedometer':
                     gauge = generate_speed([x[6] for x in list]).set_position((posX, posY)).resize(scale)
 
@@ -136,4 +121,4 @@ def generate_thing(gauges):
             if gauge:
                 clip = CompositeVideoClip([clip, gauge])
 
-        clip.write_videofile("test.mp4", fps=25)
+        clip.write_videofile("test.mp4", fps=10)
