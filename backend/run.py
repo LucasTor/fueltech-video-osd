@@ -145,3 +145,38 @@ def generate_thing(gauges):
                 clip = CompositeVideoClip([clip, gauge])
 
         clip.write_videofile("test.mp4", fps=10)
+
+
+if __name__ == '__main__':
+    generate_thing([{
+        "id": "tachometer",
+        "name": "Tacometro",
+        "x": 30,
+        "y": 100,
+        "scale": 0.5,
+        "img": "/tachometer-bg.png",
+    },
+    {
+        "id": "speedometer",
+        "name": "Velocimetro",
+        "x": 200,
+        "y": 200,
+        "scale": 0.5,
+        "img": "/speedometer-bg.png",
+    },
+    {
+        "id": "twostep",
+        "name": "Two Step",
+        "x": 200,
+        "y": 200,
+        "scale": 0.2,
+        "img": "/2step.png",
+    },
+    {
+        "id": "lambda",
+        "name": "Sonda Lambda",
+        "x": 500,
+        "y": 500,
+        "scale": 0.5,
+        "img": "/overlay-wideband.png",
+    }])
