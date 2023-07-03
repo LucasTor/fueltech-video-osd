@@ -14,3 +14,4 @@ TODO:
 - Download or save the layout of the gauges from the frontend (just a JSON, which could be saved in localstorage or downloaded as a file), if downloadable, allow users to upload the file to set the layout
 - Make resolution selectable, currently, it's fixed on 1080x1920 (I made it with Instagram reels in mind)
 - Optimize generation? Really slow as is
+- Make gauges pick data from the right column (aka parse csv as json, or findIndex in the columns titles)
