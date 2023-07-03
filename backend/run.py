@@ -16,6 +16,17 @@ def round_to_closest(x, base=50):
 def generate_tach(data_points):
     tach_clip = ImageClip('tachometer-bg.png').set_duration(len(data_points) / 25)
 
+    # pointer_frames = []
+    # for x in data_points:
+    #     position = str(int((-round_to_closest(x) / 33.3) - 60))
+    #     if not pointers_cache.get(position):
+    #         pointers_cache[position] = pointer.rotate(int(position), expand=False)
+
+    #     frame = pointers_cache[position]
+    #     pointer_frames.append(frame)
+
+    # pointer_clip = concatenate_videoclips(pointer_frames)
+
     def get_pointer(x):
         position = str(int((round_to_closest(x) / 33.3) + 60))
         return f'./assets/pointers/pointer-{position}.png'
@@ -39,6 +50,17 @@ def generate_tach(data_points):
 
 def generate_speed(data_points):
     speed_clip = ImageClip('speedometer-bg.png').set_duration(len(data_points) / 25)
+
+    # pointer_frames = []
+    # for x in data_points:
+    #     position = str(int((-round_to_closest(x, 1) / 1.1) - 55))
+    #     if not pointers_cache.get(position):
+    #         pointers_cache[position] = pointer.rotate(int(position), expand=False)
+
+    #     frame = pointers_cache[position]
+    #     pointer_frames.append(frame)
+
+    # pointer_clip = concatenate_videoclips(pointer_frames)
 
     def get_pointer(x):
         position = str(int((round_to_closest(x, 1) / 1.1) + 55))
@@ -87,7 +109,7 @@ def generate_2step(data_points):
 
     frames = ImageSequenceClip([on if x == 'ON' else off for x in data_points], fps=25, load_images=True)
 
-    return frames.set_position(('center', 'center'))
+    return frames
 
 def generate_thing(gauges):
     with open('log_fueltech_2.csv', 'r') as csv_file:
@@ -107,18 +129,19 @@ def generate_thing(gauges):
             gauge = None
             match id:
                 case 'tachometer':
-                    gauge = generate_tach([x[1] for x in list]).set_position((posX, posY)).resize(scale)
+                    gauge = generate_tach([x[1] for x in list])
             
                 case 'speedometer':
-                    gauge = generate_speed([x[6] for x in list]).set_position((posX, posY)).resize(scale)
+                    gauge = generate_speed([x[6] for x in list])
 
                 case 'twostep':
-                    gauge = generate_2step([x[5] for x in list]).set_position((posX, posY)).resize(scale)
+                    gauge = generate_2step([x[5] for x in list])
 
                 case 'lambda':
-                    gauge = generate_lambda([x[4] for x in list]).set_position((posX, posY)).resize(scale)
+                    gauge = generate_lambda([x[4] for x in list])
 
             if gauge:
+                gauge = gauge.set_position((posX, posY)).resize(scale)
                 clip = CompositeVideoClip([clip, gauge])
 
         clip.write_videofile("test.mp4", fps=10)
