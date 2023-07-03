@@ -1,2 +1,5 @@
 backend/.venv
 backend/*.mp4
+frontend/.DS_Store
+backend/.DS_Store
+.DS_Store
