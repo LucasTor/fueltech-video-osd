@@ -9,6 +9,6 @@ CORS(app)
 
 @app.route("/", methods=['POST'])
 def hello_world():
-    generate_thing(request.json)
-    # return send_file('test.mp4')
-    return "<p>Hello, World!</p>"
+    generate_thing(request.json.get('gauges'), request.json.get('log'))
+    return send_file('test.mp4')
+    # return "<p>Hello, World!</p>"

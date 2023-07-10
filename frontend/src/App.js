@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Canvas from "./Canvas";
-import { Switch } from "@mui/material";
+import { Input, Switch } from "@mui/material";
 
 const initialRectangles = [
   {
@@ -41,20 +41,47 @@ const initialRectangles = [
 
 function App() {
   const [rectangles, setRectangles] = useState(initialRectangles);
+  const [log, setLog] = useState(null);
+
+  function readFile(input) {
+    let file = input.target.files[0];
+
+    let reader = new FileReader();
+
+    reader.readAsText(file);
+
+    reader.onload = function () {
+      console.log(reader.result);
+      setLog(reader.result);
+    };
+
+    reader.onerror = function () {
+      console.log(reader.error);
+    };
+  }
 
   return (
     <div className="App">
       <header className="App-header">
         {rectangles.map((r, i) => (
           <>
-            <Switch onChange={(_, checked) => setRectangles(prev => {
-              prev[i].enabled = checked
-              return [...prev]
-            })} />
+            <Switch
+              onChange={(_, checked) =>
+                setRectangles((prev) => {
+                  prev[i].enabled = checked;
+                  return [...prev];
+                })
+              }
+            />
             {r.name}
           </>
         ))}
-        <Canvas rectangles={rectangles} setRectangles={setRectangles} />
+        <Input type="file" onChange={readFile} />
+        <Canvas
+          log={log}
+          rectangles={rectangles}
+          setRectangles={setRectangles}
+        />
         {/* <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.

@@ -111,40 +111,43 @@ def generate_2step(data_points):
 
     return frames
 
-def generate_thing(gauges):
-    with open('log_fueltech_2.csv', 'r') as csv_file:
-        reader = csv.reader(csv_file)
-        list = [*reader]
-        list.pop(0)
+def generate_thing(gauges, log):
+    reader = csv.reader(log.splitlines(), delimiter=',')
+    list = [*reader]
+    list.pop(0)
 
-        bg = ImageClip('overlay-bg.png').set_duration(len(list) / 25).set_position(("center","center"))
-        clip = CompositeVideoClip([bg])
+    print(list[0])
 
-        for gauge in gauges:
-            posX = gauge['x']
-            posY = gauge['y']
-            scale = gauge['scale']
-            id = gauge['id']
+    bg = ImageClip('overlay-bg.png').set_duration(len(list) / 25).set_position(("center","center"))
+    clip = CompositeVideoClip([bg])
 
-            gauge = None
-            match id:
-                case 'tachometer':
-                    gauge = generate_tach([x[1] for x in list])
-            
-                case 'speedometer':
-                    gauge = generate_speed([x[6] for x in list])
+    for gauge in gauges:
+        posX = gauge['x']
+        posY = gauge['y']
+        scale = gauge['scale']
+        id = gauge['id']
 
-                case 'twostep':
-                    gauge = generate_2step([x[5] for x in list])
+        # print(list)
 
-                case 'lambda':
-                    gauge = generate_lambda([x[4] for x in list])
+        gauge = None
+        match id:
+            case 'tachometer':
+                gauge = generate_tach([x[1] for x in list])
+        
+            case 'speedometer':
+                gauge = generate_speed([x[6] for x in list])
 
-            if gauge:
-                gauge = gauge.set_position((posX, posY)).resize(scale)
-                clip = CompositeVideoClip([clip, gauge])
+            case 'twostep':
+                gauge = generate_2step([x[5] for x in list])
 
-        clip.write_videofile("test.mp4", fps=10)
+            case 'lambda':
+                gauge = generate_lambda([x[4] for x in list])
+
+        if gauge:
+            gauge = gauge.set_position((posX, posY)).resize(scale)
+            clip = CompositeVideoClip([clip, gauge])
+
+    clip.write_videofile("test.mp4", fps=10)
 
 
 if __name__ == '__main__':

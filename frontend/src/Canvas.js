@@ -80,7 +80,7 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
   );
 };
 
-const Canvas = ({ rectangles, setRectangles }) => {
+const Canvas = ({ rectangles, setRectangles, log }) => {
   const [selectedId, selectShape] = React.useState(null);
 
   const checkDeselect = (e) => {
@@ -95,11 +95,25 @@ const Canvas = ({ rectangles, setRectangles }) => {
     <>
       <Button
         onClick={() => {
+          // todo: move this logic to main component
           fetch("http://127.0.0.1:5000/", {
             headers: { "Content-Type": "application/json" },
             method: "POST",
-            body: JSON.stringify(rectangles.filter((r) => r.enabled)),
-          });
+            body: JSON.stringify({
+              gauges: rectangles.filter((r) => r.enabled),
+              log,
+            }),
+          })
+            .then((response) => response.blob())
+            .then((blob) => {
+              const url = window.URL.createObjectURL(new Blob([blob]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute("download", `overlay.mp4`);
+              document.body.appendChild(link);
+              link.click();
+              link.parentNode.removeChild(link);
+            });
         }}
       >
         Submit
